@@ -60,6 +60,7 @@ class publish(object):
                        top=0.88, bottom=0.11, left=0.125, right=0.9,
                        hspace=0.2, wspace=0.2,
                        fontsize=10, preview=False, filename=None):
+
         if num_columns == 1:
             self.width = 3.6
         elif num_columns == 2:
@@ -77,7 +78,6 @@ class publish(object):
         self.fontsize    = fontsize
         self.preview     = preview
         self.filename    = filename
-        self.current_rc  = matplotlib.rcParams
 
     def __enter__(self):
         matplotlib.rcParams.update(
@@ -140,7 +140,7 @@ class publish(object):
             os.system(r"pdflatex -output-directory /tmp /tmp/ldoc.tex")
             os.system(r"evince /tmp/ldoc.pdf && rm *.log && rm *.bib && rm *.aux")
         # revert to orginal settings
-        matplotlib.rcParams.update(self.current_rc)
+        matplotlib.rcParams.update(matplotlib.rcParamsDefault)
 
 
 
