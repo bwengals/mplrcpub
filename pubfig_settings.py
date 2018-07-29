@@ -9,30 +9,75 @@ import time
 
 green1='#00ff00'
 orange='#ffba00'
-onecolumn_width = 3.6
-twocolumn_width = 7.0
 
 
-class FigConfig(object):
+test_doc = r"""
+\documentclass[10pt,twocolumn]{article}
+
+
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{amsbsy}
+\usepackage{layouts}
+\usepackage{mathtools}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Great title of paper}
+\date{\today}
+\author{George Costanza}
+\affiliation{Banzai Institute for Biomedical Engineering and Strategic Information}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+\lipsum[1-1]
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\lipsum[2-4]
+
+\begin{figure}[t!]
+  \centerline{\includegraphics[width=8.6cm]{/tmp/onecolumn.pdf}}
+\end{figure}
+
+\begin{figure*}[t!]
+  \centerline{\includegraphics[width=17.2cm]{/tmp/twocolumn.pdf}}
+\end{figure*}
+
+\lipsum[5-10]
+
+\end{document}
+"""
+
+
+
+class publish(object):
     def __init__(self, num_columns=1, height=3,
                        top=0.88, bottom=0.11, left=0.125, right=0.9,
                        hspace=0.2, wspace=0.2,
-                       fontsize=10):
+                       fontsize=10, preview=False, filename=None):
         if num_columns == 1:
-            self.width = onecolumn_width
+            self.width = 3.6
         elif num_columns == 2:
-            self.width = twocolumn_width
+            self.width = 7.0
         else:
             raise ValueError("num_columns must be 1 or 2")
-        self.num_columns  = num_columns
-        self.height   = height
-        self.top      = top
-        self.bottom   = bottom
-        self.left     = left
-        self.right    = right
-        self.hspace   = hspace
-        self.wspace   = wspace
-        self.fontsize = fontsize
+        self.num_columns = num_columns
+        self.height      = height
+        self.top         = top
+        self.bottom      = bottom
+        self.left        = left
+        self.right       = right
+        self.hspace      = hspace
+        self.wspace      = wspace
+        self.fontsize    = fontsize
+        self.preview     = preview
+        self.filename    = filename
+        self.current_rc  = matplotlib.rcParams
 
     def __enter__(self):
         matplotlib.rcParams.update(
@@ -84,82 +129,18 @@ class FigConfig(object):
         return plt.figure(figsize=(self.width, self.height))
 
     def __exit__(self, *args):
-        print("ARGS:", args)
-        if self.num_columns == 1:
+        if self.filename is not None:
+            plt.savefig(self.filename)
+
+        if self.preview:
             plt.savefig(r"/tmp/onecolumn.pdf")
             plt.savefig(r"/tmp/twocolumn.pdf")
-            # make test figure to save as two column
-            #fig = plt.figure(figsize=(self.twocolumn_width, 3))
-            #ax = fig.gca()
-            #plt.hist(np.random.randn(500), 40)
-            #plt.savefig("/tmp/twocolumn.pdf")
-        else:
-            plt.savefig(r"/tmp/onecolumn.pdf")
-            plt.savefig(r"/tmp/twocolumn.pdf")
-            # make test figure to save as one column
-            #fig = plt.figure(figsize=(self.onecolumn_width, 3))
-            #ax = fig.gca()
-            #ax.hist(np.random.randn(100), 20)
-            #plt.savefig("/tmp/onecolumn.pdf")
-        doc = r"""
-%\documentclass[prd, twocolumn, amsmath, floatfix, preprintnumbers, nofootinbib,superscriptaddress,letterpaper]{revtex4-1}
-\documentclass[11pt,twocolumn]{article}
-
-%\bibliographystyle{apsrev}
-
-\usepackage{lipsum}
-\usepackage{graphicx}
-\usepackage{amsbsy}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{dsfont}
-\usepackage{layouts}
-\usepackage{mdframed}
-\usepackage{natbib}
-\usepackage{xcolor}
-\usepackage{mathtools}
-\usepackage{subfigure}
-\usepackage{dcolumn}
-\usepackage{units}
-\usepackage{braket}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{document}
-
-\title{Great title of paper}
-\date{\today}
-\author{Your name here}
-%\email{"""+str(random.randint(1,1000))+r"""@aol.com}
-%\affiliation{Banzai Institute for Biomedical Engineering and Strategic Information}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{abstract}
-\lipsum[1-1]
-\end{abstract}
-
-\maketitle
-
-\section{Introduction}
-\lipsum[2-4]
-
-\begin{figure}[t!]
-  \centerline{\includegraphics[width=8.6cm]{/tmp/onecolumn.pdf}}
-\end{figure}
-
-\begin{figure*}[t!]
-  \centerline{\includegraphics[width=17.2cm]{/tmp/twocolumn.pdf}}
-\end{figure*}
-
-\lipsum[5-10]
-
-\end{document}
-"""
-        matplotlib.rcParams.update(matplotlib.rcParamsDefault)
-        with open("/tmp/ldoc.tex", 'w') as f:
-            f.write(doc)
-        os.system(r"pdflatex -output-directory /tmp /tmp/ldoc.tex")
-        os.system(r"evince /tmp/ldoc.pdf && rm *.log && rm *.bib && rm *.aux")
+            with open("/tmp/ldoc.tex", 'w') as f:
+                f.write(test_doc)
+            os.system(r"pdflatex -output-directory /tmp /tmp/ldoc.tex")
+            os.system(r"evince /tmp/ldoc.pdf && rm *.log && rm *.bib && rm *.aux")
+        # revert to orginal settings
+        matplotlib.rcParams.update(self.current_rc)
 
 
 
