@@ -1,11 +1,8 @@
 # mplrcpub
 
-RC settings and formatting helper for making publication ready plots.
+RC settings and formatting helper for making publication ready plots.  In particular, getting the sizing correct.  Choice of colors, tickmarks, and other styles is left undone. 
 
-Plot size and appearance is different when viewed in ipython or jupyter, vs. when it's saved as a pdf.  The sizing 
-parameters in `publish` refer to the pdf version.  For instance, the fontsize of 10 refers to the saved pdf version 
-of the figure. When that figure is placed into a latex or word doc without resizing, it's fontsize 10 will match the 
-text's fontsize of 10.
+Plot size and appearance is different when viewed in ipython or jupyter, vs. when it's saved as a pdf.  The sizing parameters in `publish` refer to the pdf version.  For instance, the fontsize of 10 refers to the saved pdf version of the figure. When that figure is placed into a latex or word doc without resizing, it's fontsize 10 will match the text's fontsize of 10.
 
 ## Example
 
@@ -54,3 +51,5 @@ with publish(
     mplrcpub.set_ticklines(ax, 1, 1)
     mplrcpub.set_tick_sizes(ax, 6, 2)
 ```
+
+![image](https://user-images.githubusercontent.com/6325473/109865821-266bc600-7c2a-11eb-8b76-711985406bb7.png)
