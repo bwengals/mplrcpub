@@ -81,9 +81,10 @@ class publish(object):
 
     def __enter__(self):
         matplotlib.rcParams.update(
-          {"text.usetex":           True,
+          {"text.usetex":           False,
            "mathtext.default":      "sf",
            "font.size":             self.fontsize,
+           "font.family":           "serif",
            "font.serif":            "Palatino",
            "font.weight":           "medium",
            "lines.markeredgewidth": 1,
@@ -106,7 +107,8 @@ class publish(object):
            "ytick.minor.pad":       2.0,
            "ytick.minor.size":      2.0,
            "ytick.minor.width":     0.8,
-           "text.latex.unicode":    True,
+           "pdf.fonttype":          42,
+           "ps.fonttype":           42,
            "pgf.texsystem":         "pdflatex",
            "savefig.dpi":           300,
            "savefig.pad_inches":    0.01,
@@ -124,7 +126,7 @@ class publish(object):
            "figure.subplot.left":   self.left,
            "figure.subplot.right":  self.right,
            "figure.subplot.hspace": self.hspace,
-           "figure.subplot.wspace": self.wspace,
+           "figure.subplot.wspace": self.wspace, 
            "pdf.compression":       6})
         return plt.figure(figsize=(self.width, self.height))
 
@@ -144,15 +146,15 @@ class publish(object):
 
 
 
-def set_ticklines(ax,major,minor):
+def set_ticklines(ax, major, minor):
     ticklines = ax.xaxis.get_majorticklines()
-    plt.setp(ticklines,mew=major)
+    plt.setp(ticklines, mew=major)
     ticklines = ax.xaxis.get_minorticklines()
-    plt.setp(ticklines,mew=minor)
+    plt.setp(ticklines, mew=minor)
     ticklines = ax.yaxis.get_majorticklines()
-    plt.setp(ticklines,mew=major)
+    plt.setp(ticklines, mew=major)
     ticklines = ax.yaxis.get_minorticklines()
-    plt.setp(ticklines,mew=minor)
+    plt.setp(ticklines, mew=minor)
 
 def set_tick_sizes(ax, major, minor):
     for l in ax.get_xticklines() + ax.get_yticklines():
